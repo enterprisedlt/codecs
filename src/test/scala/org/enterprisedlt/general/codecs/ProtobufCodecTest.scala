@@ -21,7 +21,6 @@ class ProtobufCodecTest extends FunSuite {
 
     test("String encoding/decoding works fine") {
         val msg: String = "Hello World"
-
         //
         val encoded = codec.encode[String](msg)
         val decoded = codec.decode[String](encoded, classOf[String])
@@ -30,9 +29,7 @@ class ProtobufCodecTest extends FunSuite {
     }
 
     test("Array encoding/decoding works fine") {
-
         val msg: Array[Byte] = "Hello world".getBytes(StandardCharsets.UTF_8)
-
         //
         val encoded = codec.encode[Array[Byte]](msg)
         val decoded = codec.decode[Array[Byte]](encoded, classOf[Array[Byte]])
