@@ -1,10 +1,10 @@
 package org.enterprisedlt.general.codecs
 
-import com.google.protobuf.{CodedInputStream, CodedOutputStream, Message, Parser}
+import com.google.protobuf._
 
 /**
-  * @author Maxim Fedin
-  */
+ * @author Maxim Fedin
+ */
 class ProtobufCodec extends BinaryCodec {
 
     override def encode[T](value: T): Array[Byte] =
@@ -48,6 +48,14 @@ class ProtobufCodec extends BinaryCodec {
                 val buffer = new Array[Byte](8)
                 CodedOutputStream.newInstance(buffer).writeDoubleNoTag(m)
                 buffer
+
+            case m: String =>
+                val buffer = ByteString.copyFromUtf8(m)
+                buffer.toByteArray
+
+            case m: Array[Byte] =>
+                val buffer = ByteString.copyFrom(m)
+                buffer.toByteArray
 
             case m: Message => m.toByteArray
 
@@ -99,6 +107,18 @@ class ProtobufCodec extends BinaryCodec {
                 CodedInputStream
                   .newInstance(value)
                   .readDouble()
+                  .asInstanceOf[T]
+
+            case x if classOf[String].equals(x) =>
+                ByteString
+                  .copyFrom(value)
+                  .toStringUtf8
+                  .asInstanceOf[T]
+
+            case x if classOf[Array[Byte]].equals(x) =>
+                ByteString
+                  .copyFrom(value)
+                  .toByteArray
                   .asInstanceOf[T]
 
             case x if classOf[Message].isAssignableFrom(x) =>

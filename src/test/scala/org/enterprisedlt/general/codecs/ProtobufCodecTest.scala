@@ -1,5 +1,7 @@
 package org.enterprisedlt.general.codecs
 
+import java.nio.charset.StandardCharsets
+
 import org.enterprisedlt.general.proto.TestMessage
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
@@ -13,9 +15,30 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ProtobufCodecTest extends FunSuite {
 
-    val codec = new ProtobufCodec()
+    val codec: ProtobufCodec = new ProtobufCodec()
 
     case class TestClass()
+
+    test("String encoding/decoding works fine") {
+        val msg: String = "Hello World"
+
+        //
+        val encoded = codec.encode[String](msg)
+        val decoded = codec.decode[String](encoded, classOf[String])
+        //
+        assert(msg == decoded)
+    }
+
+    test("Array encoding/decoding works fine") {
+
+        val msg: Array[Byte] = "Hello world".getBytes(StandardCharsets.UTF_8)
+
+        //
+        val encoded = codec.encode[Array[Byte]](msg)
+        val decoded = codec.decode[Array[Byte]](encoded, classOf[Array[Byte]])
+        //
+        assert(msg sameElements decoded)
+    }
 
     test("Protobuf message encoding/decoding works fine") {
         val msg: TestMessage = TestMessage.newBuilder()
