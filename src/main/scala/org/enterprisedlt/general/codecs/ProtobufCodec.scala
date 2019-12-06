@@ -1,6 +1,7 @@
 package org.enterprisedlt.general.codecs
 
 import com.google.protobuf._
+import org.enterprisedlt.spec.BinaryCodec
 
 /**
  * @author Maxim Fedin

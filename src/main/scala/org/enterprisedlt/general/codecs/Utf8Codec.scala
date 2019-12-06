@@ -2,6 +2,8 @@ package org.enterprisedlt.general.codecs
 
 import java.nio.charset.StandardCharsets
 
+import org.enterprisedlt.spec.BinaryCodec
+
 /**
  * @author Alexey Polubelov
  */
