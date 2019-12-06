@@ -67,7 +67,7 @@ bintray {
     publications = ['mavenPublication']
     publish = true
     pkg {
-        repo = 'fabric'
+        repo = 'general'
         userOrg = 'enterprisedlt'
         name = 'codecs'
         websiteUrl = 'https://github.com/enterprisedlt/codecs'
