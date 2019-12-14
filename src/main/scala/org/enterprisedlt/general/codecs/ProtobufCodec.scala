@@ -1,6 +1,7 @@
 package org.enterprisedlt.general.codecs
 
 import com.google.protobuf._
+import java.lang.reflect.Type
 import org.enterprisedlt.spec.BinaryCodec
 
 /**
@@ -64,73 +65,73 @@ class ProtobufCodec extends BinaryCodec {
         }
 
 
-    override def decode[T](value: Array[Byte], clz: Class[T]): T =
+    override def decode[T](value: Array[Byte], clz: Type): T =
         clz match {
-            case x if classOf[Int].equals(x) =>
+            case x: Class[_] if classOf[Int].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readSInt32()
                   .asInstanceOf[T]
 
-            case x if classOf[Byte].equals(x) =>
+            case x: Class[_] if classOf[Byte].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readRawByte()
                   .asInstanceOf[T]
 
-            case x if classOf[Short].equals(x) =>
+            case x: Class[_] if classOf[Short].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readSInt32()
                   .toShort
                   .asInstanceOf[T]
 
-            case x if classOf[Char].equals(x) =>
+            case x: Class[_] if classOf[Char].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readSInt32()
                   .toChar
                   .asInstanceOf[T]
 
-            case x if classOf[Float].equals(x) =>
+            case x: Class[_] if classOf[Float].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readFloat()
                   .asInstanceOf[T]
 
-            case x if classOf[Long].equals(x) =>
+            case x: Class[_] if classOf[Long].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readSInt64()
                   .asInstanceOf[T]
 
-            case x if classOf[Double].equals(x) =>
+            case x: Class[_] if classOf[Double].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readDouble()
                   .asInstanceOf[T]
 
-            case x if classOf[String].equals(x) =>
+            case x: Class[_] if classOf[String].equals(x) =>
                 ByteString
                   .copyFrom(value)
                   .toStringUtf8
                   .asInstanceOf[T]
 
-            case x if classOf[Array[Byte]].equals(x) =>
+            case x: Class[_] if classOf[Array[Byte]].equals(x) =>
                 ByteString
                   .copyFrom(value)
                   .toByteArray
                   .asInstanceOf[T]
 
-            case x if classOf[Message].isAssignableFrom(x) =>
-                clz
+            case x: Class[_] if classOf[Message].isAssignableFrom(x) =>
+                x
                   .getMethod("parser")
                   .invoke(null)
                   .asInstanceOf[Parser[T]]
                   .parseFrom(value)
 
-            case _ =>
-                throw new Exception("Unsupported class")
+            case t =>
+                throw new Exception(s"Unsupported type: ${t.getTypeName}")
         }
 }
 
