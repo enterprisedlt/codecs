@@ -1,7 +1,8 @@
 package org.enterprisedlt.general.codecs
 
-import com.google.protobuf._
 import java.lang.reflect.Type
+
+import com.google.protobuf._
 import org.enterprisedlt.spec.BinaryCodec
 
 /**
@@ -11,6 +12,8 @@ class ProtobufCodec extends BinaryCodec {
 
     override def encode[T](value: T): Array[Byte] =
         value match {
+            case null => Array.empty
+
             case m: Byte =>
                 val buffer = new Array[Byte](1)
                 CodedOutputStream.newInstance(buffer).write(m)
@@ -59,6 +62,7 @@ class ProtobufCodec extends BinaryCodec {
                 val buffer = ByteString.copyFrom(m)
                 buffer.toByteArray
 
+
             case m: Message => m.toByteArray
 
             case _ => throw new Exception("Unsupported class")
@@ -67,6 +71,8 @@ class ProtobufCodec extends BinaryCodec {
 
     override def decode[T](value: Array[Byte], clz: Type): T =
         clz match {
+            case _ if value.isEmpty => null.asInstanceOf[T]
+
             case x: Class[_] if classOf[Int].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
