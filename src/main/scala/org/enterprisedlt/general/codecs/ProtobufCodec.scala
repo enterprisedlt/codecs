@@ -79,6 +79,12 @@ class ProtobufCodec extends BinaryCodec {
                   .readSInt32()
                   .asInstanceOf[T]
 
+            case x: Class[_] if classOf[Boolean].equals(x) =>
+                CodedInputStream
+                  .newInstance(value)
+                  .readSInt32()
+                  .asInstanceOf[T]
+
             case x: Class[_] if classOf[Byte].equals(x) =>
                 CodedInputStream
                   .newInstance(value)

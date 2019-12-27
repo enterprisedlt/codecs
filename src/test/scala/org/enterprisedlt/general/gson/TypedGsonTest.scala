@@ -5,6 +5,8 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
+import scala.runtime.BoxedUnit
+
 
 /**
   * @author Alexey Polubelov
@@ -21,6 +23,26 @@ class TypedGsonTest extends FunSuite {
         assert(dummy.someString == "Hey")
         assert(dummy.someInt == 1)
         assert(dummy.someFloat == 2)
+    }
+
+    test("library should determine Unit type") {
+        val codec: Gson = (new GsonBuilder).encodeTypes().create()
+        val x: Unit = ()
+        val encoded = codec.toJson(x)
+        println(encoded)
+        val decoded: Any = codec.fromJson(encoded, classOf[Unit]) // check the type determined by adapter
+        //        assert(decoded.isInstanceOf[BoxedUnit])
+        assert(decoded == ())
+    }
+
+    test("library should determine Boolean type") {
+        val codec: Gson = (new GsonBuilder).encodeTypes().create()
+        val x = true
+        val encoded = codec.toJson(x)
+        println(encoded)
+        val decoded: Any = codec.fromJson(encoded, classOf[Boolean]) // check the type determined by adapter
+        assert(decoded.isInstanceOf[Boolean])
+        assert(decoded == true)
     }
 
 }
