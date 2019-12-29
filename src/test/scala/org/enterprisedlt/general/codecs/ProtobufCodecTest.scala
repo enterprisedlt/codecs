@@ -52,7 +52,8 @@ class ProtobufCodecTest extends FunSuite {
     test("Unsupported class for non-protobuf object works fine") {
 
         an[java.lang.Exception] should be thrownBy { // Ensure a particular exception type is thrown
-            codec.decode[TestClass](new Array[Byte](0), classOf[TestClass])
+            val x = codec.decode[TestClass](new Array[Byte](0), classOf[TestClass])
+            println(x)
         }
     }
 
@@ -61,6 +62,15 @@ class ProtobufCodecTest extends FunSuite {
         //
         val encoded = codec.encode[Int](msg)
         val decoded = codec.decode[Int](encoded, classOf[Int])
+        //
+        assert(msg == decoded)
+    }
+
+    test("Boolean encoding/decoding works fine") {
+        val msg: Boolean = true
+        //
+        val encoded = codec.encode[Boolean](msg)
+        val decoded = codec.decode[Boolean](encoded, classOf[Boolean])
         //
         assert(msg == decoded)
     }

@@ -5,12 +5,11 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
-import scala.runtime.BoxedUnit
 
 
 /**
-  * @author Alexey Polubelov
-  */
+ * @author Alexey Polubelov
+ */
 @RunWith(classOf[JUnitRunner])
 class TypedGsonTest extends FunSuite {
 
@@ -31,7 +30,7 @@ class TypedGsonTest extends FunSuite {
         val encoded = codec.toJson(x)
         println(encoded)
         val decoded: Any = codec.fromJson(encoded, classOf[Unit]) // check the type determined by adapter
-        //        assert(decoded.isInstanceOf[BoxedUnit])
+//        assert(decoded.isInstanceOf[Unit])
         assert(decoded == ())
     }
 
