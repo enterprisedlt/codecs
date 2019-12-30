@@ -6,7 +6,6 @@ import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
 
-
 /**
  * @author Alexey Polubelov
  */
@@ -22,16 +21,6 @@ class TypedGsonTest extends FunSuite {
         assert(dummy.someString == "Hey")
         assert(dummy.someInt == 1)
         assert(dummy.someFloat == 2)
-    }
-
-    test("library should determine Unit type") {
-        val codec: Gson = (new GsonBuilder).encodeTypes().create()
-        val x: Unit = ()
-        val encoded = codec.toJson(x)
-        println(encoded)
-        val decoded: Any = codec.fromJson(encoded, classOf[Unit]) // check the type determined by adapter
-//        assert(decoded.isInstanceOf[Unit])
-        assert(decoded == ())
     }
 
     test("library should determine Boolean type") {

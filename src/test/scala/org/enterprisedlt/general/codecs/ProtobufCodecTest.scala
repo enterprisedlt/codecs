@@ -3,6 +3,7 @@ package org.enterprisedlt.general.codecs
 import java.nio.charset.StandardCharsets
 
 import org.enterprisedlt.general.proto.TestMessage
+import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
@@ -10,8 +11,8 @@ import org.scalatest.junit.JUnitRunner
 
 
 /**
-  * @author Maxim Fedin
-  */
+ * @author Maxim Fedin
+ */
 @RunWith(classOf[JUnitRunner])
 class ProtobufCodecTest extends FunSuite {
 
@@ -50,11 +51,20 @@ class ProtobufCodecTest extends FunSuite {
     }
 
     test("Unsupported class for non-protobuf object works fine") {
-
+        val msg: Array[Byte] = "Hello World".getBytes(StandardCharsets.UTF_8)
         an[java.lang.Exception] should be thrownBy { // Ensure a particular exception type is thrown
-            val x = codec.decode[TestClass](new Array[Byte](0), classOf[TestClass])
+            val x = codec.decode[TestClass](msg, classOf[TestClass])
             println(x)
         }
+    }
+
+    test("null encoding/decoding works fine") {
+        val msg = null
+        //
+        val encoded = codec.encode[AnyRef](msg)
+        val decoded = codec.decode[AnyRef](encoded, classOf[AnyRef])
+        //
+        assert(msg == decoded)
     }
 
     test("Positive Int encoding/decoding works fine") {
@@ -179,6 +189,15 @@ class ProtobufCodecTest extends FunSuite {
         //
         val encoded = codec.encode[Double](msg)
         val decoded = codec.decode[Double](encoded, classOf[Double])
+        //
+        assert(msg == decoded)
+    }
+
+    test("Unit encoding/decoding works fine") {
+        val msg: Unit = ()
+        //
+        val encoded = codec.encode[Unit](msg)
+        val decoded = codec.decode[Unit](encoded, classOf[Unit])
         //
         assert(msg == decoded)
     }
