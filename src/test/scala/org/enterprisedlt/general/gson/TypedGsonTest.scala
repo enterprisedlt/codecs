@@ -23,14 +23,4 @@ class TypedGsonTest extends FunSuite {
         assert(dummy.someFloat == 2)
     }
 
-    test("library should determine Boolean type") {
-        val codec: Gson = (new GsonBuilder).encodeTypes().create()
-        val x = true
-        val encoded = codec.toJson(x)
-        println(encoded)
-        val decoded: Any = codec.fromJson(encoded, classOf[Boolean]) // check the type determined by adapter
-        assert(decoded.isInstanceOf[Boolean])
-        assert(decoded == true)
-    }
-
 }
