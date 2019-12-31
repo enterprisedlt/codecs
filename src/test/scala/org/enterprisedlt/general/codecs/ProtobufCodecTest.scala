@@ -74,8 +74,17 @@ class ProtobufCodecTest extends FunSuite {
         assert(msg == decoded)
     }
 
-    test("Boolean encoding/decoding works fine") {
+    test("Boolean true encoding/decoding works fine") {
         val msg: Boolean = true
+        //
+        val encoded = codec.encode[Boolean](msg)
+        val decoded = codec.decode[Boolean](encoded, classOf[Boolean])
+        //
+        assert(msg == decoded)
+    }
+
+    test("Boolean false encoding/decoding works fine") {
+        val msg: Boolean = false
         //
         val encoded = codec.encode[Boolean](msg)
         val decoded = codec.decode[Boolean](encoded, classOf[Boolean])
