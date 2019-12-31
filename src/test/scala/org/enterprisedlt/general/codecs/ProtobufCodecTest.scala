@@ -52,8 +52,7 @@ class ProtobufCodecTest extends FunSuite {
     test("Unsupported class for non-protobuf object works fine") {
         val msg: Array[Byte] = "Hello World".getBytes(StandardCharsets.UTF_8)
         an[java.lang.Exception] should be thrownBy { // Ensure a particular exception type is thrown
-            val x = codec.decode[TestClass](msg, classOf[TestClass])
-            println(x)
+            codec.decode[TestClass](msg, classOf[TestClass])
         }
     }
 
