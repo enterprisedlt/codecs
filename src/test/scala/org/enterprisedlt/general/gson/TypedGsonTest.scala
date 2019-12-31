@@ -23,4 +23,12 @@ class TypedGsonTest extends FunSuite {
         assert(dummy.someFloat == 2)
     }
 
+    test("Unit object over typed codec") {
+        val codec: Gson = (new GsonBuilder).encodeTypes().create()
+        val encoded = codec.toJson(())
+//        val decoded: Any =
+            println(codec.fromJson(encoded, classOf[Unit])) // check the type determined by adapter
+//        assert(decoded.isInstanceOf[Unit])
+    }
+
 }
