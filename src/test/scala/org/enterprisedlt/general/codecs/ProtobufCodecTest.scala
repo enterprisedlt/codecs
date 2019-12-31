@@ -3,7 +3,6 @@ package org.enterprisedlt.general.codecs
 import java.nio.charset.StandardCharsets
 
 import org.enterprisedlt.general.proto.TestMessage
-import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
