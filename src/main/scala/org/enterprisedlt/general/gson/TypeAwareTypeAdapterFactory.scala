@@ -17,7 +17,9 @@ class TypeAwareTypeAdapterFactory(
     typeNamesResolver: TypeNameResolver
 ) extends TypeAdapterFactory {
     override def create[T](codec: Gson, typeToken: TypeToken[T]): TypeAdapter[T] =
-        new ScalaTypeAdapter(codec, typeToken, codec.getDelegateAdapter(this, typeToken))
+        new ScalaTypeAdapter(codec, typeToken,
+            if (typeToken.getRawType == classOf[Unit]) null else
+              codec.getDelegateAdapter(this, typeToken))
 
     class ScalaTypeAdapter[T](codec: Gson, typeToken: TypeToken[T], nextTypeAdapter: TypeAdapter[T])
       extends TypeAdapter[T] {
@@ -29,7 +31,7 @@ class TypeAwareTypeAdapterFactory(
 
         private def toJsonElement(jsonWriter: JsonWriter, value: T): JsonElement =
             value match {
-                case x if x == None || x == null => JsonNull.INSTANCE
+                case x if x == None || x == null || x.isInstanceOf[Unit] => JsonNull.INSTANCE
                 case Some(x) =>
                     val jsonTreeWriter = mkTreeWriter(jsonWriter)
                     codec.getAdapter(clazz(x)).write(jsonTreeWriter, x)
@@ -61,6 +63,7 @@ class TypeAwareTypeAdapterFactory(
         override def read(jsonReader: JsonReader): T = {
             val json: JsonElement = new JsonParser().parse(jsonReader)
             typeToken.getType match {
+                case t if t == classOf[Unit] || t == classOf[Void] => ().asInstanceOf[T]
                 case pt: ParameterizedType if pt.getRawType == classOf[Option[_]] =>
                     val actualType = pt.getActualTypeArguments()(0)
                     val next = codec.getAdapter(TypeToken.get(actualType))

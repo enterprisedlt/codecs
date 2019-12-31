@@ -10,8 +10,8 @@ import org.scalatest.junit.JUnitRunner
 
 
 /**
-  * @author Maxim Fedin
-  */
+ * @author Maxim Fedin
+ */
 @RunWith(classOf[JUnitRunner])
 class ProtobufCodecTest extends FunSuite {
 
@@ -50,10 +50,19 @@ class ProtobufCodecTest extends FunSuite {
     }
 
     test("Unsupported class for non-protobuf object works fine") {
-
+        val msg: Array[Byte] = "Hello World".getBytes(StandardCharsets.UTF_8)
         an[java.lang.Exception] should be thrownBy { // Ensure a particular exception type is thrown
-            codec.decode[TestClass](new Array[Byte](0), classOf[TestClass])
+            codec.decode[TestClass](msg, classOf[TestClass])
         }
+    }
+
+    test("null encoding/decoding works fine") {
+        val msg = null
+        //
+        val encoded = codec.encode[AnyRef](msg)
+        val decoded = codec.decode[AnyRef](encoded, classOf[AnyRef])
+        //
+        assert(msg == decoded)
     }
 
     test("Positive Int encoding/decoding works fine") {
@@ -61,6 +70,24 @@ class ProtobufCodecTest extends FunSuite {
         //
         val encoded = codec.encode[Int](msg)
         val decoded = codec.decode[Int](encoded, classOf[Int])
+        //
+        assert(msg == decoded)
+    }
+
+    test("Boolean true encoding/decoding works fine") {
+        val msg: Boolean = true
+        //
+        val encoded = codec.encode[Boolean](msg)
+        val decoded = codec.decode[Boolean](encoded, classOf[Boolean])
+        //
+        assert(msg == decoded)
+    }
+
+    test("Boolean false encoding/decoding works fine") {
+        val msg: Boolean = false
+        //
+        val encoded = codec.encode[Boolean](msg)
+        val decoded = codec.decode[Boolean](encoded, classOf[Boolean])
         //
         assert(msg == decoded)
     }
@@ -169,6 +196,15 @@ class ProtobufCodecTest extends FunSuite {
         //
         val encoded = codec.encode[Double](msg)
         val decoded = codec.decode[Double](encoded, classOf[Double])
+        //
+        assert(msg == decoded)
+    }
+
+    test("Unit encoding/decoding works fine") {
+        val msg: Unit = ()
+        //
+        val encoded = codec.encode[Unit](msg)
+        val decoded = codec.decode[Unit](encoded, classOf[Unit])
         //
         assert(msg == decoded)
     }

@@ -14,6 +14,8 @@ class ProtobufCodec extends BinaryCodec {
         value match {
             case null => Array.empty
 
+            case _: Unit => Array.empty
+
             case m: Byte =>
                 val buffer = new Array[Byte](1)
                 CodedOutputStream.newInstance(buffer).write(m)
@@ -71,12 +73,21 @@ class ProtobufCodec extends BinaryCodec {
 
     override def decode[T](value: Array[Byte], clz: Type): T =
         clz match {
+
+            case x: Class[_] if classOf[Unit].equals(x) => ().asInstanceOf[T]
+
             case _ if value.isEmpty => null.asInstanceOf[T]
 
             case x: Class[_] if classOf[Int].equals(x) =>
                 CodedInputStream
                   .newInstance(value)
                   .readSInt32()
+                  .asInstanceOf[T]
+
+            case x: Class[_] if classOf[Boolean].equals(x) =>
+                CodedInputStream
+                  .newInstance(value)
+                  .readBool()
                   .asInstanceOf[T]
 
             case x: Class[_] if classOf[Byte].equals(x) =>
