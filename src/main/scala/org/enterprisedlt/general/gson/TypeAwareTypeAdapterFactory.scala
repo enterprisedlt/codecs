@@ -31,7 +31,7 @@ class TypeAwareTypeAdapterFactory(
 
         private def toJsonElement(jsonWriter: JsonWriter, value: T): JsonElement =
             value match {
-                case x if x == None || x == null || x == () => JsonNull.INSTANCE
+                case x if x == None || x == null || x.isInstanceOf[Unit] => JsonNull.INSTANCE
                 case Some(x) =>
                     val jsonTreeWriter = mkTreeWriter(jsonWriter)
                     codec.getAdapter(clazz(x)).write(jsonTreeWriter, x)

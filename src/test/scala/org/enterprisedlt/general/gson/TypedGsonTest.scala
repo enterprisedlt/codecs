@@ -1,6 +1,8 @@
 package org.enterprisedlt.general.gson
 
 import com.google.gson.{Gson, GsonBuilder}
+import org.enterprisedlt.general.codecs.GsonCodec
+import org.enterprisedlt.spec.BinaryCodec
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
@@ -24,11 +26,11 @@ class TypedGsonTest extends FunSuite {
     }
 
     test("Unit object over typed codec") {
-        val codec: Gson = (new GsonBuilder).encodeTypes().create()
-        val encoded = codec.toJson(())
-//        val decoded: Any =
-            println(codec.fromJson(encoded, classOf[Unit])) // check the type determined by adapter
-//        assert(decoded.isInstanceOf[Unit])
+        val codec: BinaryCodec = GsonCodec( gsonOptions = _.encodeTypes())
+        val msg: Unit = ()
+        val encoded = codec.encode[Unit](msg)
+        val decoded: Unit = codec.decode[Unit](encoded, classOf[Unit])
+        assert(msg == decoded)
     }
 
 }
