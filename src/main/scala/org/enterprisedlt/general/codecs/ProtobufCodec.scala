@@ -4,6 +4,7 @@ import java.lang.reflect.Type
 
 import com.google.protobuf._
 import org.enterprisedlt.spec.BinaryCodec
+import scalapb.GeneratedMessage
 
 /**
  * @author Maxim Fedin
@@ -12,9 +13,14 @@ class ProtobufCodec extends BinaryCodec {
 
     override def encode[T](value: T): Array[Byte] =
         value match {
-            case null => Array.empty
+            case null =>
+                Array.empty
 
-            case _: Unit => Array.empty
+            case _: Unit =>
+                Array.empty
+
+            case m: GeneratedMessage =>
+                m.toByteArray
 
             case m: Byte =>
                 val buffer = new Array[Byte](1)
@@ -74,9 +80,18 @@ class ProtobufCodec extends BinaryCodec {
     override def decode[T](value: Array[Byte], clz: Type): T =
         clz match {
 
-            case x: Class[_] if classOf[Unit].equals(x) => ().asInstanceOf[T]
+            case x: Class[_] if classOf[Unit].equals(x) =>
+                ().asInstanceOf[T]
 
-            case _ if value.isEmpty => null.asInstanceOf[T]
+            case _ if value.isEmpty =>
+                null.asInstanceOf[T]
+
+            case x: Class[_] if classOf[GeneratedMessage].isAssignableFrom(x) =>
+                val name = x.getCanonicalName
+                val clazz = java.lang.Class.forName(name + "$")
+                val companion = clazz.getField("MODULE$").get(clazz)
+                val parseFrom = clazz.getMethod("parseFrom", classOf[Array[Byte]])
+                parseFrom.invoke(companion, value).asInstanceOf[T]
 
             case x: Class[_] if classOf[Int].equals(x) =>
                 CodedInputStream

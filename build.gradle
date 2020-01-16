@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'org.enterprisedlt.general'
-version '2.0.0-RC3'
+version '2.0.0-RC4'
 
 compileScala.targetCompatibility = 1.8
 
@@ -14,6 +14,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile('com.google.code.gson:gson:2.7')
     compile('com.google.protobuf:protobuf-java:3.6.1')
+    compile ('com.thesamet.scalapb:scalapb-runtime_2.12:0.8.1')
     //
     compile 'org.enterprisedlt.general:contract-spec:2.0.0-RC1'
 
